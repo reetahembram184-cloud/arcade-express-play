@@ -146,7 +146,10 @@ export function Overview() {
   const active = (tokens ?? []).filter((t) => t.status === "active").length;
 
   const byGame = new Map<string, number>();
-  for (const p of plays) byGame.set(p.game_id, (byGame.get(p.game_id) ?? 0) + 1);
+  for (const p of plays) {
+    const gid = p.game_id ?? "";
+    byGame.set(gid, (byGame.get(gid) ?? 0) + 1);
+  }
   let topGameId: string | null = null;
   let topCount = 0;
   for (const [gid, count] of byGame) if (count > topCount) [topGameId, topCount] = [gid, count];
@@ -392,7 +395,7 @@ export function EmbedLinks() {
     },
   });
 
-  const update = async (id: string, patch: Record<string, unknown>, message: string) => {
+  const update = async (id: string, patch: { status?: string; token?: string }, message: string) => {
     const { error } = await supabase.from("embed_tokens").update(patch).eq("id", id);
     if (error) toast.error(error.message);
     else {
@@ -541,7 +544,10 @@ export function Analytics() {
   const max = Math.max(1, ...days.map((d) => d.count));
 
   const perGame = new Map<string, number>();
-  for (const p of plays) perGame.set(p.game_id, (perGame.get(p.game_id) ?? 0) + 1);
+  for (const p of plays) {
+    const gid = p.game_id ?? "";
+    perGame.set(gid, (perGame.get(gid) ?? 0) + 1);
+  }
   const gameName = (id: string) =>
     (tokens ?? []).find((t) => t.game_id === id)?.games?.name ?? "Game";
 
