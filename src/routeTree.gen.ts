@@ -12,6 +12,9 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as LeaderboardRouteImport } from './routes/leaderboard'
+import { Route as DeveloperIndexRouteImport } from './routes/developer.index'
+import { Route as DeveloperLoginRouteImport } from './routes/developer.login'
+import { Route as DeveloperRegisterRouteImport } from './routes/developer.register'
 import { Route as GamesIndexRouteImport } from './routes/games.index'
 import { Route as GamesSlugRouteImport } from './routes/games.$slug'
 
@@ -30,6 +33,21 @@ const LeaderboardRoute = LeaderboardRouteImport.update({
   path: '/leaderboard',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DeveloperIndexRoute = DeveloperIndexRouteImport.update({
+  id: '/developer/',
+  path: '/developer/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DeveloperLoginRoute = DeveloperLoginRouteImport.update({
+  id: '/developer/login',
+  path: '/developer/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DeveloperRegisterRoute = DeveloperRegisterRouteImport.update({
+  id: '/developer/register',
+  path: '/developer/register',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const GamesIndexRoute = GamesIndexRouteImport.update({
   id: '/games/',
   path: '/games/',
@@ -45,14 +63,20 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/leaderboard': typeof LeaderboardRoute
+  '/developer/login': typeof DeveloperLoginRoute
+  '/developer/register': typeof DeveloperRegisterRoute
   '/games/$slug': typeof GamesSlugRoute
+  '/developer/': typeof DeveloperIndexRoute
   '/games/': typeof GamesIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/leaderboard': typeof LeaderboardRoute
+  '/developer/login': typeof DeveloperLoginRoute
+  '/developer/register': typeof DeveloperRegisterRoute
   '/games/$slug': typeof GamesSlugRoute
+  '/developer': typeof DeveloperIndexRoute
   '/games': typeof GamesIndexRoute
 }
 export interface FileRoutesById {
@@ -60,22 +84,53 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/leaderboard': typeof LeaderboardRoute
+  '/developer/login': typeof DeveloperLoginRoute
+  '/developer/register': typeof DeveloperRegisterRoute
   '/games/$slug': typeof GamesSlugRoute
+  '/developer/': typeof DeveloperIndexRoute
   '/games/': typeof GamesIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/about' | '/leaderboard' | '/games/$slug' | '/games/'
+  fullPaths:
+    | '/'
+    | '/about'
+    | '/leaderboard'
+    | '/developer/login'
+    | '/developer/register'
+    | '/games/$slug'
+    | '/developer/'
+    | '/games/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/about' | '/leaderboard' | '/games/$slug' | '/games'
-  id: '__root__' | '/' | '/about' | '/leaderboard' | '/games/$slug' | '/games/'
+  to:
+    | '/'
+    | '/about'
+    | '/leaderboard'
+    | '/developer/login'
+    | '/developer/register'
+    | '/games/$slug'
+    | '/developer'
+    | '/games'
+  id:
+    | '__root__'
+    | '/'
+    | '/about'
+    | '/leaderboard'
+    | '/developer/login'
+    | '/developer/register'
+    | '/games/$slug'
+    | '/developer/'
+    | '/games/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
   LeaderboardRoute: typeof LeaderboardRoute
+  DeveloperLoginRoute: typeof DeveloperLoginRoute
+  DeveloperRegisterRoute: typeof DeveloperRegisterRoute
   GamesSlugRoute: typeof GamesSlugRoute
+  DeveloperIndexRoute: typeof DeveloperIndexRoute
   GamesIndexRoute: typeof GamesIndexRoute
 }
 
@@ -102,6 +157,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LeaderboardRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/developer/': {
+      id: '/developer/'
+      path: '/developer'
+      fullPath: '/developer/'
+      preLoaderRoute: typeof DeveloperIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/developer/login': {
+      id: '/developer/login'
+      path: '/developer/login'
+      fullPath: '/developer/login'
+      preLoaderRoute: typeof DeveloperLoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/developer/register': {
+      id: '/developer/register'
+      path: '/developer/register'
+      fullPath: '/developer/register'
+      preLoaderRoute: typeof DeveloperRegisterRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/games/': {
       id: '/games/'
       path: '/games'
@@ -123,7 +199,10 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
   LeaderboardRoute: LeaderboardRoute,
+  DeveloperLoginRoute: DeveloperLoginRoute,
+  DeveloperRegisterRoute: DeveloperRegisterRoute,
   GamesSlugRoute: GamesSlugRoute,
+  DeveloperIndexRoute: DeveloperIndexRoute,
   GamesIndexRoute: GamesIndexRoute,
 }
 export const routeTree = rootRouteImport
