@@ -10,17 +10,29 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as LeaderboardRouteImport } from './routes/leaderboard'
+import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
 import { Route as DeveloperIndexRouteImport } from './routes/developer.index'
 import { Route as DeveloperLoginRouteImport } from './routes/developer.login'
 import { Route as DeveloperRegisterRouteImport } from './routes/developer.register'
 import { Route as GamesIndexRouteImport } from './routes/games.index'
 import { Route as GamesSlugRouteImport } from './routes/games.$slug'
+import { Route as AuthenticatedDeveloperAnalyticsRouteImport } from './routes/_authenticated/developer.analytics'
+import { Route as AuthenticatedDeveloperDashboardRouteImport } from './routes/_authenticated/developer.dashboard'
+import { Route as AuthenticatedDeveloperEmbedsRouteImport } from './routes/_authenticated/developer.embeds'
+import { Route as AuthenticatedDeveloperGenerateRouteImport } from './routes/_authenticated/developer.generate'
+import { Route as AuthenticatedDeveloperSettingsRouteImport } from './routes/_authenticated/developer.settings'
+import { Route as EmbedGameSlugTokenRouteImport } from './routes/embed.$gameSlug.$token'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
+  id: '/_authenticated',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AboutRoute = AboutRouteImport.update({
@@ -32,6 +44,11 @@ const LeaderboardRoute = LeaderboardRouteImport.update({
   id: '/leaderboard',
   path: '/leaderboard',
   getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const DeveloperIndexRoute = DeveloperIndexRouteImport.update({
   id: '/developer/',
@@ -58,37 +75,94 @@ const GamesSlugRoute = GamesSlugRouteImport.update({
   path: '/games/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedDeveloperAnalyticsRoute =
+  AuthenticatedDeveloperAnalyticsRouteImport.update({
+    id: '/developer/analytics',
+    path: '/developer/analytics',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedDeveloperDashboardRoute =
+  AuthenticatedDeveloperDashboardRouteImport.update({
+    id: '/developer/dashboard',
+    path: '/developer/dashboard',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedDeveloperEmbedsRoute =
+  AuthenticatedDeveloperEmbedsRouteImport.update({
+    id: '/developer/embeds',
+    path: '/developer/embeds',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedDeveloperGenerateRoute =
+  AuthenticatedDeveloperGenerateRouteImport.update({
+    id: '/developer/generate',
+    path: '/developer/generate',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedDeveloperSettingsRoute =
+  AuthenticatedDeveloperSettingsRouteImport.update({
+    id: '/developer/settings',
+    path: '/developer/settings',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const EmbedGameSlugTokenRoute = EmbedGameSlugTokenRouteImport.update({
+  id: '/embed/$gameSlug/$token',
+  path: '/embed/$gameSlug/$token',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/leaderboard': typeof LeaderboardRoute
+  '/admin': typeof AuthenticatedAdminRoute
   '/developer/login': typeof DeveloperLoginRoute
   '/developer/register': typeof DeveloperRegisterRoute
   '/games/$slug': typeof GamesSlugRoute
   '/developer/': typeof DeveloperIndexRoute
   '/games/': typeof GamesIndexRoute
+  '/developer/analytics': typeof AuthenticatedDeveloperAnalyticsRoute
+  '/developer/dashboard': typeof AuthenticatedDeveloperDashboardRoute
+  '/developer/embeds': typeof AuthenticatedDeveloperEmbedsRoute
+  '/developer/generate': typeof AuthenticatedDeveloperGenerateRoute
+  '/developer/settings': typeof AuthenticatedDeveloperSettingsRoute
+  '/embed/$gameSlug/$token': typeof EmbedGameSlugTokenRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/leaderboard': typeof LeaderboardRoute
+  '/admin': typeof AuthenticatedAdminRoute
   '/developer/login': typeof DeveloperLoginRoute
   '/developer/register': typeof DeveloperRegisterRoute
   '/games/$slug': typeof GamesSlugRoute
   '/developer': typeof DeveloperIndexRoute
   '/games': typeof GamesIndexRoute
+  '/developer/analytics': typeof AuthenticatedDeveloperAnalyticsRoute
+  '/developer/dashboard': typeof AuthenticatedDeveloperDashboardRoute
+  '/developer/embeds': typeof AuthenticatedDeveloperEmbedsRoute
+  '/developer/generate': typeof AuthenticatedDeveloperGenerateRoute
+  '/developer/settings': typeof AuthenticatedDeveloperSettingsRoute
+  '/embed/$gameSlug/$token': typeof EmbedGameSlugTokenRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/about': typeof AboutRoute
   '/leaderboard': typeof LeaderboardRoute
+  '/_authenticated/admin': typeof AuthenticatedAdminRoute
   '/developer/login': typeof DeveloperLoginRoute
   '/developer/register': typeof DeveloperRegisterRoute
   '/games/$slug': typeof GamesSlugRoute
   '/developer/': typeof DeveloperIndexRoute
   '/games/': typeof GamesIndexRoute
+  '/_authenticated/developer/analytics': typeof AuthenticatedDeveloperAnalyticsRoute
+  '/_authenticated/developer/dashboard': typeof AuthenticatedDeveloperDashboardRoute
+  '/_authenticated/developer/embeds': typeof AuthenticatedDeveloperEmbedsRoute
+  '/_authenticated/developer/generate': typeof AuthenticatedDeveloperGenerateRoute
+  '/_authenticated/developer/settings': typeof AuthenticatedDeveloperSettingsRoute
+  '/embed/$gameSlug/$token': typeof EmbedGameSlugTokenRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -96,35 +170,58 @@ export interface FileRouteTypes {
     | '/'
     | '/about'
     | '/leaderboard'
+    | '/admin'
     | '/developer/login'
     | '/developer/register'
     | '/games/$slug'
     | '/developer/'
     | '/games/'
+    | '/developer/analytics'
+    | '/developer/dashboard'
+    | '/developer/embeds'
+    | '/developer/generate'
+    | '/developer/settings'
+    | '/embed/$gameSlug/$token'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/about'
     | '/leaderboard'
+    | '/admin'
     | '/developer/login'
     | '/developer/register'
     | '/games/$slug'
     | '/developer'
     | '/games'
+    | '/developer/analytics'
+    | '/developer/dashboard'
+    | '/developer/embeds'
+    | '/developer/generate'
+    | '/developer/settings'
+    | '/embed/$gameSlug/$token'
   id:
     | '__root__'
     | '/'
+    | '/_authenticated'
     | '/about'
     | '/leaderboard'
+    | '/_authenticated/admin'
     | '/developer/login'
     | '/developer/register'
     | '/games/$slug'
     | '/developer/'
     | '/games/'
+    | '/_authenticated/developer/analytics'
+    | '/_authenticated/developer/dashboard'
+    | '/_authenticated/developer/embeds'
+    | '/_authenticated/developer/generate'
+    | '/_authenticated/developer/settings'
+    | '/embed/$gameSlug/$token'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   AboutRoute: typeof AboutRoute
   LeaderboardRoute: typeof LeaderboardRoute
   DeveloperLoginRoute: typeof DeveloperLoginRoute
@@ -132,6 +229,7 @@ export interface RootRouteChildren {
   GamesSlugRoute: typeof GamesSlugRoute
   DeveloperIndexRoute: typeof DeveloperIndexRoute
   GamesIndexRoute: typeof GamesIndexRoute
+  EmbedGameSlugTokenRoute: typeof EmbedGameSlugTokenRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -141,6 +239,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated': {
+      id: '/_authenticated'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AuthenticatedRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/about': {
@@ -156,6 +261,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/leaderboard'
       preLoaderRoute: typeof LeaderboardRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/admin': {
+      id: '/_authenticated/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AuthenticatedAdminRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
     }
     '/developer/': {
       id: '/developer/'
@@ -192,11 +304,75 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof GamesSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated/developer/analytics': {
+      id: '/_authenticated/developer/analytics'
+      path: '/developer/analytics'
+      fullPath: '/developer/analytics'
+      preLoaderRoute: typeof AuthenticatedDeveloperAnalyticsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/developer/dashboard': {
+      id: '/_authenticated/developer/dashboard'
+      path: '/developer/dashboard'
+      fullPath: '/developer/dashboard'
+      preLoaderRoute: typeof AuthenticatedDeveloperDashboardRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/developer/embeds': {
+      id: '/_authenticated/developer/embeds'
+      path: '/developer/embeds'
+      fullPath: '/developer/embeds'
+      preLoaderRoute: typeof AuthenticatedDeveloperEmbedsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/developer/generate': {
+      id: '/_authenticated/developer/generate'
+      path: '/developer/generate'
+      fullPath: '/developer/generate'
+      preLoaderRoute: typeof AuthenticatedDeveloperGenerateRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/developer/settings': {
+      id: '/_authenticated/developer/settings'
+      path: '/developer/settings'
+      fullPath: '/developer/settings'
+      preLoaderRoute: typeof AuthenticatedDeveloperSettingsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/embed/$gameSlug/$token': {
+      id: '/embed/$gameSlug/$token'
+      path: '/embed/$gameSlug/$token'
+      fullPath: '/embed/$gameSlug/$token'
+      preLoaderRoute: typeof EmbedGameSlugTokenRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
+interface AuthenticatedRouteRouteChildren {
+  AuthenticatedAdminRoute: typeof AuthenticatedAdminRoute
+  AuthenticatedDeveloperAnalyticsRoute: typeof AuthenticatedDeveloperAnalyticsRoute
+  AuthenticatedDeveloperDashboardRoute: typeof AuthenticatedDeveloperDashboardRoute
+  AuthenticatedDeveloperEmbedsRoute: typeof AuthenticatedDeveloperEmbedsRoute
+  AuthenticatedDeveloperGenerateRoute: typeof AuthenticatedDeveloperGenerateRoute
+  AuthenticatedDeveloperSettingsRoute: typeof AuthenticatedDeveloperSettingsRoute
+}
+
+const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedAdminRoute: AuthenticatedAdminRoute,
+  AuthenticatedDeveloperAnalyticsRoute: AuthenticatedDeveloperAnalyticsRoute,
+  AuthenticatedDeveloperDashboardRoute: AuthenticatedDeveloperDashboardRoute,
+  AuthenticatedDeveloperEmbedsRoute: AuthenticatedDeveloperEmbedsRoute,
+  AuthenticatedDeveloperGenerateRoute: AuthenticatedDeveloperGenerateRoute,
+  AuthenticatedDeveloperSettingsRoute: AuthenticatedDeveloperSettingsRoute,
+}
+
+const AuthenticatedRouteRouteWithChildren =
+  AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AboutRoute: AboutRoute,
   LeaderboardRoute: LeaderboardRoute,
   DeveloperLoginRoute: DeveloperLoginRoute,
@@ -204,17 +380,8 @@ const rootRouteChildren: RootRouteChildren = {
   GamesSlugRoute: GamesSlugRoute,
   DeveloperIndexRoute: DeveloperIndexRoute,
   GamesIndexRoute: GamesIndexRoute,
+  EmbedGameSlugTokenRoute: EmbedGameSlugTokenRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}

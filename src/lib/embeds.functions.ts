@@ -13,7 +13,7 @@ export interface EmbedValidation {
  * embed tokens are never readable by anonymous clients.
  */
 export const validateEmbed = createServerFn({ method: "GET" })
-  .inputValidator((input: { token: string; gameSlug: string; origin?: string }) => ({
+  .inputValidator((input: { token: string; gameSlug: string; origin?: string | undefined }) => ({
     token: String(input.token ?? "").slice(0, 128),
     gameSlug: String(input.gameSlug ?? "").slice(0, 64),
     origin: input.origin ? String(input.origin).slice(0, 256) : undefined,
@@ -59,7 +59,7 @@ export const validateEmbed = createServerFn({ method: "GET" })
 
 /** Records an embed lifecycle event (load / play / score) for developer analytics. */
 export const recordEmbedEvent = createServerFn({ method: "POST" })
-  .inputValidator((input: { token: string; eventType: string; origin?: string }) => ({
+  .inputValidator((input: { token: string; eventType: string; origin?: string | undefined }) => ({
     token: String(input.token ?? "").slice(0, 128),
     eventType: ["load", "play", "score"].includes(String(input.eventType))
       ? String(input.eventType)
