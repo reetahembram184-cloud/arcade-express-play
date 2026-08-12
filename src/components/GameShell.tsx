@@ -50,6 +50,11 @@ export function GameShell({
     setHighScore(getLocalHighScore(game.slug));
   }, [game.slug]);
 
+  // Warm up the ad library so the interstitial request is fast.
+  useEffect(() => {
+    void initializeAds();
+  }, []);
+
   const handleScore = useCallback((n: number) => setScore(n), []);
   const handleStat = useCallback(
     (s: Record<string, string | number>) => setStats(s),
@@ -190,7 +195,7 @@ export function GameShell({
             <div className="flex flex-wrap justify-center gap-3">
               <button
                 type="button"
-                onClick={startRun}
+                onClick={handlePlay}
                 className="rounded-xl bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90"
               >
                 Play Again
