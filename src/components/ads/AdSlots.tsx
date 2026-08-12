@@ -54,10 +54,10 @@ export function BannerAd({ className }: { className?: string }) {
 
 /** Larger in-flow slot used between page sections. */
 export function InterstitialAdSlot({ className }: { className?: string }) {
-  return <BannerAd className={className} />;
+  return <BannerAd className={className ?? ""} />;
 }
 
 /** Shown after a run ends, above the score summary. */
 export function PostGameAd({ className }: { className?: string }) {
-  return <BannerAd className={className} />;
+  return <BannerAd className={className ?? ""} />;
 }
