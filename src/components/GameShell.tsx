@@ -35,7 +35,7 @@ export function GameShell({
   onScoreSaved,
   showPreGameAd = true,
 }: GameShellProps) {
-  const [phase, setPhase] = useState<Phase>(showPreGameAd ? "ad" : "playing");
+  const [phase, setPhase] = useState<Phase>(showPreGameAd ? "intro" : "playing");
   const [runId, setRunId] = useState(0);
   const [paused, setPaused] = useState(false);
   const [score, setScore] = useState(0);
@@ -86,11 +86,40 @@ export function GameShell({
     setPhase("playing");
   }, []);
 
+  /** PLAY GAME → (maybe) interstitial → game. Ads never block gameplay. */
+  const handlePlay = useCallback(() => {
+    if (showPreGameAd && shouldShowInterstitial()) {
+      setPhase("ad");
+      return;
+    }
+    startRun();
+  }, [showPreGameAd, startRun]);
+
   const Game = game.Component;
 
-  if (phase === "ad") {
-    return <PreGameAd onContinue={startRun} />;
+  if (phase === "intro") {
+    return (
+      <div className="glass flex w-full flex-col items-center gap-4 rounded-2xl p-8 text-center">
+        <h2 className="font-display text-2xl">{game.title}</h2>
+        <p className="max-w-sm text-sm text-muted-foreground">{game.short}</p>
+        <button
+          type="button"
+          onClick={handlePlay}
+          className="w-full rounded-xl bg-primary px-8 py-4 text-base font-semibold text-primary-foreground transition-opacity hover:opacity-90 sm:w-auto"
+        >
+          ▶ Play Game
+        </button>
+        <p className="text-xs text-muted-foreground">
+          An advertisement may play before the game starts.
+        </p>
+      </div>
+    );
   }
+
+  if (phase === "ad") {
+    return <InterstitialAd onFinished={startRun} />;
+  }
+
 
   return (
     <div className="glass overflow-hidden rounded-2xl">
