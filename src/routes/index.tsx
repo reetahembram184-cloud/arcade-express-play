@@ -2,7 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { SiteLayout } from "@/components/SiteLayout";
 import { GameCard } from "@/components/GameCard";
 import { FEATURED_SLUGS, GAMES } from "@/games/registry";
-import { BannerAd, InterstitialAd } from "@/components/ads/AdSlots";
+import { BannerAd, InterstitialAdSlot } from "@/components/ads/AdSlots";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -78,7 +78,7 @@ function Home() {
       </section>
 
       <section className="mx-auto w-full max-w-6xl px-4 py-6">
-        <InterstitialAd />
+        <InterstitialAdSlot />
       </section>
 
       <section className="mx-auto w-full max-w-6xl px-4 py-10">
