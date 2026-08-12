@@ -3,7 +3,7 @@ import { Link } from "@tanstack/react-router";
 import { toast } from "sonner";
 import type { GameMeta } from "@/games/registry";
 import { getLocalHighScore, setLocalHighScore, submitScore } from "@/lib/scores";
-import { PostGameAd } from "@/components/ads/AdSlots";
+import { BannerAd, PostGameAd } from "@/components/ads/AdSlots";
 import { InterstitialAd } from "@/components/ads/InterstitialAd";
 import { initializeAds, shouldShowInterstitial } from "@/services/adService";
 
@@ -117,13 +117,21 @@ export function GameShell({
         <p className="text-xs text-muted-foreground">
           An advertisement may play before the game starts.
         </p>
+        {/* Real GPT ad slot directly below the Play button */}
+        <BannerAd className="mt-2 max-w-md" />
       </div>
     );
   }
 
   if (phase === "ad") {
-    return <InterstitialAd onFinished={startRun} />;
+    return (
+      <div className="flex w-full flex-col items-center gap-3">
+        <InterstitialAd onFinished={startRun} />
+        <BannerAd className="max-w-md" />
+      </div>
+    );
   }
+
 
 
   return (
