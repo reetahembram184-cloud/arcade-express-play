@@ -82,7 +82,10 @@ export function initializeAds(): Promise<boolean> {
       cmd(() => {
         const gt = window.googletag;
         try {
-          gt.pubads().enableSingleRequest();
+          // Each slot requests independently so ads defined later
+          // (e.g. below the Play button) still fill.
+          gt.pubads().disableInitialLoad === undefined;
+
           gt.pubads().collapseEmptyDivs(true);
           if (adConfig.testMode) {
             // Non-personalised requests while testing.
