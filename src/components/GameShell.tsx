@@ -3,9 +3,11 @@ import { Link } from "@tanstack/react-router";
 import { toast } from "sonner";
 import type { GameMeta } from "@/games/registry";
 import { getLocalHighScore, setLocalHighScore, submitScore } from "@/lib/scores";
-import { PostGameAd, PreGameAd } from "@/components/ads/AdSlots";
+import { PostGameAd } from "@/components/ads/AdSlots";
+import { InterstitialAd } from "@/components/ads/InterstitialAd";
+import { initializeAds, shouldShowInterstitial } from "@/services/adService";
 
-type Phase = "ad" | "playing" | "over";
+type Phase = "intro" | "ad" | "playing" | "over";
 
 interface GameShellProps {
   game: GameMeta;
@@ -14,6 +16,7 @@ interface GameShellProps {
   onScoreSaved?: (score: number) => void;
   showPreGameAd?: boolean;
 }
+
 
 function Stat({ label, value }: { label: string; value: string | number }) {
   return (
