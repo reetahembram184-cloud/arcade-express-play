@@ -28,7 +28,11 @@ export const adConfig = {
   interstitialUnit: env["VITE_ADS_INTERSTITIAL_UNIT"] ?? "",
   bannerUnit: env["VITE_ADS_BANNER_UNIT"] ?? "",
   /** Show an interstitial roughly once every N game starts. */
-  interstitialFrequency: Number(env["VITE_INTERSTITIAL_FREQUENCY"] ?? 3) || 3,
+  interstitialFrequency: Number(env["VITE_INTERSTITIAL_FREQUENCY"] ?? 1) || 1,
+  /** AdMob rewarded unit — mobile SDK only, unused on the web build. */
+  rewardedUnit: env["VITE_ADS_REWARDED_UNIT"] ?? "",
+  /** Seconds the pre-game ad stays on screen before Continue unlocks. */
+  interstitialSeconds: Number(env["VITE_ADS_INTERSTITIAL_SECONDS"] ?? 5) || 5,
   /** Give up waiting for a creative after this many ms and start the game. */
   loadTimeoutMs: 6000,
 };

@@ -35,7 +35,7 @@ export function InterstitialAd({ onFinished }: { onFinished: () => void }) {
 
   useEffect(() => {
     const id = window.setInterval(() => {
-      setSeconds((s) => (s > 0 ? s - 1 : 0));
+      setSeconds((s: number) => (s > 0 ? s - 1 : 0));
     }, 1000);
     return () => window.clearInterval(id);
   }, []);
