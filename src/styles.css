@@ -91,6 +91,8 @@
   --chart-3: oklch(0.78 0.17 150);
   --chart-4: oklch(0.82 0.16 85);
   --chart-5: oklch(0.68 0.16 280);
+  --arcade-glow: oklch(0.82 0.16 190 / 0.5);
+  --arcade-ink: oklch(0.11 0.02 258);
   --sidebar: oklch(0.19 0.03 258);
   --sidebar-foreground: oklch(0.96 0.008 250);
   --sidebar-primary: oklch(0.82 0.16 190);
@@ -163,6 +165,56 @@
   overscroll-behavior: contain;
   user-select: none;
   -webkit-user-select: none;
+}
+
+@keyframes arcade-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 var(--arcade-glow), 0 0 1.6rem var(--arcade-glow); }
+  50% { box-shadow: 0 0 0 0.65rem transparent, 0 0 2.8rem var(--arcade-glow); }
+}
+
+@keyframes score-pop {
+  0% { transform: scale(0.96); }
+  50% { transform: scale(1.04); }
+  100% { transform: scale(1); }
+}
+
+@utility arcade-shell {
+  background:
+    linear-gradient(145deg, color-mix(in oklab, var(--color-surface-2) 82%, transparent), var(--arcade-ink));
+  border: 1px solid color-mix(in oklab, var(--color-primary) 28%, var(--color-border));
+  box-shadow: var(--shadow-panel), inset 0 1px color-mix(in oklab, var(--color-foreground) 8%, transparent);
+}
+
+@utility play-pulse {
+  animation: arcade-pulse 2s ease-in-out infinite;
+}
+
+@utility arcade-scanlines {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.12;
+  background: repeating-linear-gradient(to bottom, transparent 0 3px, color-mix(in oklab, var(--color-background) 65%, transparent) 4px);
+}
+
+@utility ad-stage {
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  box-shadow: var(--shadow-panel);
+}
+
+.game-surface canvas {
+  border-radius: var(--radius-md);
+  box-shadow: inset 0 0 0 1px var(--color-border), 0 1rem 3rem -2rem var(--arcade-glow);
+}
+
+.game-surface button:not([data-slot]) {
+  transition: transform 120ms ease, filter 120ms ease;
+}
+
+.game-surface button:not([data-slot]):active {
+  transform: translateY(2px) scale(0.98);
+  filter: brightness(1.12);
 }
 
 @media (prefers-reduced-motion: reduce) {

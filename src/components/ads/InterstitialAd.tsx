@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
-import { adConfig, displayBannerAd, displayInterstitialAd } from "@/services/adService";
+import { LoaderCircle, ShieldCheck } from "lucide-react";
+import { adConfig, displayBannerAd, displayInterstitialAd, displayRewardedAd } from "@/services/adService";
 
 /**
  * Full-screen advertisement shown before a game run.
@@ -13,7 +14,7 @@ import { adConfig, displayBannerAd, displayInterstitialAd } from "@/services/adS
 export function InterstitialAd({ onFinished }: { onFinished: () => void }) {
   const slotRef = useRef<HTMLDivElement | null>(null);
   const finishedRef = useRef(false);
-  const [seconds, setSeconds] = useState(adConfig.interstitialSeconds);
+  const [status, setStatus] = useState("Requesting Google test ad…");
 
   // Real GPT ad request inside the overlay.
   useEffect(() => {
@@ -25,48 +26,45 @@ export function InterstitialAd({ onFinished }: { onFinished: () => void }) {
       if (!active) fn();
       else cleanup = fn;
     });
-    // Also request the native web interstitial (fills only on real inventory).
-    void displayInterstitialAd();
+    void (async () => {
+      setStatus("Loading rewarded test ad…");
+      const rewarded = await displayRewardedAd();
+      if (!active) return;
+      if (rewarded === "shown") {
+        finishedRef.current = true;
+        onFinished();
+        return;
+      }
+      setStatus("Rewarded unavailable — trying interstitial…");
+      const interstitial = await displayInterstitialAd();
+      if (!active) return;
+      setStatus(interstitial === "shown" ? "Ad complete" : "Ad unavailable — starting game");
+      finishedRef.current = true;
+      onFinished();
+    })();
     return () => {
       active = false;
       cleanup?.();
     };
-  }, []);
-
-  useEffect(() => {
-    const id = window.setInterval(() => {
-      setSeconds((s: number) => (s > 0 ? s - 1 : 0));
-    }, 1000);
-    return () => window.clearInterval(id);
-  }, []);
-
-  const finish = () => {
-    if (finishedRef.current) return;
-    finishedRef.current = true;
-    onFinished();
-  };
+  }, [onFinished]);
 
   return (
     <div className="fixed inset-0 z-50 flex flex-col items-center justify-center gap-4 bg-background/95 p-4 backdrop-blur-sm">
-      <span className="text-[0.65rem] font-semibold uppercase tracking-[0.35em] text-muted-foreground">
+      <span className="text-[0.65rem] font-semibold uppercase tracking-[0.3em] text-muted-foreground">
         Advertisement
       </span>
 
-      <div className="glass flex w-full max-w-md flex-col items-center gap-3 rounded-2xl p-4">
-        <div ref={slotRef} className="flex min-h-[100px] w-full justify-center" />
-        <p className="text-xs text-muted-foreground" role="status" aria-live="polite">
-          Your game starts right after this ad.
+      <div className="ad-stage flex w-full max-w-md flex-col items-center gap-4 rounded-lg p-4">
+        <div ref={slotRef} className="flex min-h-[50px] w-full justify-center overflow-hidden" />
+        <LoaderCircle className="size-6 animate-spin text-primary" aria-hidden />
+        <p className="text-center text-xs text-muted-foreground" role="status" aria-live="polite">
+          {status}
         </p>
+        <div className="flex items-center gap-2 text-[0.65rem] text-muted-foreground">
+          <ShieldCheck className="size-3.5 text-success" aria-hidden />
+          Official Google test inventory
+        </div>
       </div>
-
-      <button
-        type="button"
-        onClick={finish}
-        disabled={seconds > 0}
-        className="rounded-xl bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground transition-opacity disabled:opacity-60"
-      >
-        {seconds > 0 ? `Continue in ${seconds}s` : "Continue to game"}
-      </button>
     </div>
   );
 }

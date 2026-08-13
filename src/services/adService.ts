@@ -16,7 +16,8 @@ const bool = (v: string | undefined, fallback = false) =>
 
 /** Google's officially published sample ad units, used only in test mode. */
 const GOOGLE_TEST_UNITS = {
-  interstitial: "/6355419/Travel/Europe/France/Paris",
+  interstitial: "/22639388115/interstitial_example",
+  rewarded: "/22639388115/rewarded_web_example",
   banner: "/6355419/Travel/Europe/France/Paris",
 };
 
@@ -42,6 +43,9 @@ export const interstitialUnitPath = () =>
 
 export const bannerUnitPath = () =>
   adConfig.testMode ? GOOGLE_TEST_UNITS.banner : adConfig.bannerUnit;
+
+export const rewardedUnitPath = () =>
+  adConfig.testMode ? GOOGLE_TEST_UNITS.rewarded : "";
 
 /** True when we have everything needed to legitimately request an ad. */
 export const isAdReady = () => {
@@ -178,6 +182,67 @@ export async function displayBannerAd(container: HTMLElement): Promise<() => voi
 /* ------------------------------------------------------------------ */
 
 export type InterstitialResult = "shown" | "unavailable";
+
+/**
+ * Requests GPT's official rewarded-web format. The Play action is the user's
+ * opt-in; GPT supplies the creative, close UI and reward lifecycle. Resolves
+ * only after the ad closes, or unavailable when this browser/inventory cannot
+ * serve rewarded web. Production rewarded inventory must be configured in
+ * Google Ad Manager; AdMob ca-app-pub IDs cannot be used by a website.
+ */
+export function displayRewardedAd(): Promise<InterstitialResult> {
+  if (typeof window === "undefined") return Promise.resolve("unavailable");
+
+  return initializeAds().then((ok) => {
+    const unit = rewardedUnitPath();
+    if (!ok || !unit) return "unavailable" as const;
+
+    return new Promise<InterstitialResult>((resolve) => {
+      let slot: any = null;
+      let settled = false;
+      let visible = false;
+      const gt = window.googletag;
+      const finish = (result: InterstitialResult) => {
+        if (settled) return;
+        settled = true;
+        window.clearTimeout(timer);
+        cmd(() => {
+          gt.pubads().removeEventListener("rewardedSlotReady", onReady);
+          gt.pubads().removeEventListener("rewardedSlotClosed", onClosed);
+          gt.pubads().removeEventListener("slotRenderEnded", onRender);
+          if (slot) gt.destroySlots([slot]);
+        });
+        resolve(result);
+      };
+      const onReady = (event: any) => {
+        if (event.slot !== slot) return;
+        visible = true;
+        event.makeRewardedVisible();
+      };
+      const onClosed = (event: any) => {
+        if (event.slot === slot) finish("shown");
+      };
+      const onRender = (event: any) => {
+        if (event.slot === slot && event.isEmpty) finish("unavailable");
+      };
+      const timer = window.setTimeout(() => finish(visible ? "shown" : "unavailable"), 8000);
+
+      cmd(() => {
+        try {
+          slot = gt.defineOutOfPageSlot(unit, gt.enums.OutOfPageFormat.REWARDED);
+          if (!slot) return finish("unavailable");
+          slot.addService(gt.pubads());
+          gt.pubads().addEventListener("rewardedSlotReady", onReady);
+          gt.pubads().addEventListener("rewardedSlotClosed", onClosed);
+          gt.pubads().addEventListener("slotRenderEnded", onRender);
+          gt.display(slot);
+        } catch {
+          finish("unavailable");
+        }
+      });
+    });
+  });
+}
 
 /**
  * Requests a GPT web interstitial and resolves once it has been shown and

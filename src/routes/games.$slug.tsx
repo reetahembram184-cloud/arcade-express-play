@@ -28,6 +28,8 @@ export const Route = createFileRoute("/games/$slug")({
         { name: "description", content: loaderData.description },
         { property: "og:title", content: title },
         { property: "og:description", content: loaderData.description },
+        { property: "og:type", content: "website" },
+        { name: "twitter:card", content: "summary" },
       ],
     };
   },
@@ -68,7 +70,7 @@ function GamePage() {
 
   return (
     <SiteLayout>
-      <div className="mx-auto w-full max-w-3xl px-4 py-6">
+      <div className="mx-auto w-full max-w-3xl px-3 py-5 sm:px-4 sm:py-7">
         <div className="mb-4 flex items-center gap-3">
           <Link
             to="/games"
@@ -91,8 +93,8 @@ function GamePage() {
 
         <BannerAd className="mt-4" />
 
-        <section className="mt-8 grid gap-4 sm:grid-cols-2">
-          <div className="glass rounded-2xl p-5">
+        <section className="mt-8 grid gap-0 overflow-hidden rounded-lg border border-border bg-surface sm:grid-cols-2 sm:divide-x sm:divide-border">
+          <div className="border-b border-border p-5 sm:border-b-0">
             <h2 className="font-display text-lg">How to Play</h2>
             <ul className="mt-3 space-y-2 text-sm text-muted-foreground">
               {game.howToPlay.map((line) => (
@@ -105,7 +107,7 @@ function GamePage() {
               ))}
             </ul>
           </div>
-          <div className="glass rounded-2xl p-5">
+          <div className="p-5">
             <h2 className="font-display text-lg">Controls</h2>
             <ul className="mt-3 space-y-2 text-sm text-muted-foreground">
               {game.controls.map((line) => (
@@ -119,7 +121,7 @@ function GamePage() {
           </div>
         </section>
 
-        <section className="glass mt-4 rounded-2xl p-5">
+        <section className="mt-4 border-l-4 border-primary bg-surface px-5 py-4">
           <h2 className="font-display text-lg">About {game.title}</h2>
           <p className="mt-2 text-sm text-muted-foreground">{game.description}</p>
         </section>
