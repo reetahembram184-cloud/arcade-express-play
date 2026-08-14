@@ -10,6 +10,7 @@ export default defineTool({
     category: z.string().trim().min(1).optional().describe("Filter by category, e.g. 'arcade'."),
     limit: z.number().int().min(1).max(50).default(20).describe("Maximum number of games to return."),
   },
+  outputSchema: { games: z.array(z.record(z.string(), z.unknown())) },
   annotations: { readOnlyHint: true, idempotentHint: true, openWorldHint: false },
   handler: async ({ category, limit }) => {
     const supabase = supabaseAnon();

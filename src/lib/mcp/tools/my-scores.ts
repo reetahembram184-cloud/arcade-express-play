@@ -9,6 +9,7 @@ export default defineTool({
   inputSchema: {
     limit: z.number().int().min(1).max(50).default(20).describe("Number of scores to return."),
   },
+  outputSchema: { scores: z.array(z.record(z.string(), z.unknown())) },
   annotations: { readOnlyHint: true, idempotentHint: true, openWorldHint: false },
   handler: async ({ limit }, ctx) => {
     if (!ctx.isAuthenticated()) {

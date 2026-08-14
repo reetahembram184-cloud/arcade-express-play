@@ -10,6 +10,7 @@ export default defineTool({
     game_slug: z.string().trim().min(1).optional().describe("Game slug, e.g. 'car-race'."),
     limit: z.number().int().min(1).max(50).default(10).describe("Number of top scores to return."),
   },
+  outputSchema: { scores: z.array(z.record(z.string(), z.unknown())) },
   annotations: { readOnlyHint: true, idempotentHint: true, openWorldHint: false },
   handler: async ({ game_slug, limit }) => {
     const supabase = supabaseAnon();
