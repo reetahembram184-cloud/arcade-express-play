@@ -19,6 +19,7 @@ import { Route as DeveloperLoginRouteImport } from './routes/developer.login'
 import { Route as DeveloperRegisterRouteImport } from './routes/developer.register'
 import { Route as GamesIndexRouteImport } from './routes/games.index'
 import { Route as GamesSlugRouteImport } from './routes/games.$slug'
+import { Route as DotlovableOauthConsentRouteImport } from './routes/[.]lovable.oauth.consent'
 import { Route as AuthenticatedDeveloperAnalyticsRouteImport } from './routes/_authenticated/developer.analytics'
 import { Route as AuthenticatedDeveloperDashboardRouteImport } from './routes/_authenticated/developer.dashboard'
 import { Route as AuthenticatedDeveloperEmbedsRouteImport } from './routes/_authenticated/developer.embeds'
@@ -75,6 +76,11 @@ const GamesSlugRoute = GamesSlugRouteImport.update({
   path: '/games/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DotlovableOauthConsentRoute = DotlovableOauthConsentRouteImport.update({
+  id: '/.lovable/oauth/consent',
+  path: '/.lovable/oauth/consent',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AuthenticatedDeveloperAnalyticsRoute =
   AuthenticatedDeveloperAnalyticsRouteImport.update({
     id: '/developer/analytics',
@@ -121,6 +127,7 @@ export interface FileRoutesByFullPath {
   '/games/$slug': typeof GamesSlugRoute
   '/developer/': typeof DeveloperIndexRoute
   '/games/': typeof GamesIndexRoute
+  '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
   '/developer/analytics': typeof AuthenticatedDeveloperAnalyticsRoute
   '/developer/dashboard': typeof AuthenticatedDeveloperDashboardRoute
   '/developer/embeds': typeof AuthenticatedDeveloperEmbedsRoute
@@ -138,6 +145,7 @@ export interface FileRoutesByTo {
   '/games/$slug': typeof GamesSlugRoute
   '/developer': typeof DeveloperIndexRoute
   '/games': typeof GamesIndexRoute
+  '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
   '/developer/analytics': typeof AuthenticatedDeveloperAnalyticsRoute
   '/developer/dashboard': typeof AuthenticatedDeveloperDashboardRoute
   '/developer/embeds': typeof AuthenticatedDeveloperEmbedsRoute
@@ -157,6 +165,7 @@ export interface FileRoutesById {
   '/games/$slug': typeof GamesSlugRoute
   '/developer/': typeof DeveloperIndexRoute
   '/games/': typeof GamesIndexRoute
+  '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
   '/_authenticated/developer/analytics': typeof AuthenticatedDeveloperAnalyticsRoute
   '/_authenticated/developer/dashboard': typeof AuthenticatedDeveloperDashboardRoute
   '/_authenticated/developer/embeds': typeof AuthenticatedDeveloperEmbedsRoute
@@ -176,6 +185,7 @@ export interface FileRouteTypes {
     | '/games/$slug'
     | '/developer/'
     | '/games/'
+    | '/.lovable/oauth/consent'
     | '/developer/analytics'
     | '/developer/dashboard'
     | '/developer/embeds'
@@ -193,6 +203,7 @@ export interface FileRouteTypes {
     | '/games/$slug'
     | '/developer'
     | '/games'
+    | '/.lovable/oauth/consent'
     | '/developer/analytics'
     | '/developer/dashboard'
     | '/developer/embeds'
@@ -211,6 +222,7 @@ export interface FileRouteTypes {
     | '/games/$slug'
     | '/developer/'
     | '/games/'
+    | '/.lovable/oauth/consent'
     | '/_authenticated/developer/analytics'
     | '/_authenticated/developer/dashboard'
     | '/_authenticated/developer/embeds'
@@ -229,6 +241,7 @@ export interface RootRouteChildren {
   GamesSlugRoute: typeof GamesSlugRoute
   DeveloperIndexRoute: typeof DeveloperIndexRoute
   GamesIndexRoute: typeof GamesIndexRoute
+  DotlovableOauthConsentRoute: typeof DotlovableOauthConsentRoute
   EmbedGameSlugTokenRoute: typeof EmbedGameSlugTokenRoute
 }
 
@@ -302,6 +315,13 @@ declare module '@tanstack/react-router' {
       path: '/games/$slug'
       fullPath: '/games/$slug'
       preLoaderRoute: typeof GamesSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/.lovable/oauth/consent': {
+      id: '/.lovable/oauth/consent'
+      path: '/.lovable/oauth/consent'
+      fullPath: '/.lovable/oauth/consent'
+      preLoaderRoute: typeof DotlovableOauthConsentRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_authenticated/developer/analytics': {
@@ -380,6 +400,7 @@ const rootRouteChildren: RootRouteChildren = {
   GamesSlugRoute: GamesSlugRoute,
   DeveloperIndexRoute: DeveloperIndexRoute,
   GamesIndexRoute: GamesIndexRoute,
+  DotlovableOauthConsentRoute: DotlovableOauthConsentRoute,
   EmbedGameSlugTokenRoute: EmbedGameSlugTokenRoute,
 }
 export const routeTree = rootRouteImport
