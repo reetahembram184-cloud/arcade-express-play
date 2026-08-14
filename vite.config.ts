@@ -25,9 +25,8 @@ export default defineConfig({
     server: { entry: "server" },
     ...(isGithubPages
       ? {
-          // Render a single static shell that boots the client router for every route.
-          spa: { enabled: true },
-          prerender: { enabled: true, crawlLinks: false },
+          // One static shell (index.html) that boots the client router for every route.
+          spa: { enabled: true, prerender: { outputPath: "/index.html" } },
         }
       : {}),
   },
