@@ -12,9 +12,16 @@ export const Route = createFileRoute("/developer/login")({
       { name: "robots", content: "noindex" },
     ],
   }),
-  component: () => (
-    <SiteLayout>
-      <AuthCard mode="login" />
-    </SiteLayout>
-  ),
+  validateSearch: (s: Record<string, unknown>): { next?: string } =>
+    typeof s["next"] === "string" ? { next: s["next"] } : {},
+  component: LoginPage,
 });
+
+function LoginPage() {
+  const { next } = Route.useSearch();
+  return (
+    <SiteLayout>
+      <AuthCard mode="login" next={next} />
+    </SiteLayout>
+  );
+}

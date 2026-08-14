@@ -6,15 +6,23 @@ import { lovable } from "@/integrations/lovable/index";
 
 interface Props {
   mode: "login" | "register";
+  /** Same-origin relative path to return to after sign-in (used by the OAuth consent flow). */
+  next?: string | undefined;
 }
 
-export function AuthCard({ mode }: Props) {
+/** Only allow same-origin relative paths as a post-login redirect. */
+function safeNext(next?: string) {
+  return next && next.startsWith("/") && !next.startsWith("//") ? next : undefined;
+}
+
+export function AuthCard({ mode, next }: Props) {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
   const [busy, setBusy] = useState(false);
   const [resetSent, setResetSent] = useState(false);
+  const returnTo = safeNext(next);
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -25,7 +33,7 @@ export function AuthCard({ mode }: Props) {
           email,
           password,
           options: {
-            emailRedirectTo: `${window.location.origin}/developer/dashboard`,
+            emailRedirectTo: `${window.location.origin}${returnTo ?? "/developer/dashboard"}`,
             data: { display_name: name || email.split("@")[0] },
           },
         });
@@ -36,7 +44,8 @@ export function AuthCard({ mode }: Props) {
         if (error) throw error;
         toast.success("Login successful");
       }
-      void navigate({ to: "/developer/dashboard" });
+      if (returnTo) window.location.href = returnTo;
+      else void navigate({ to: "/developer/dashboard" });
     } catch (err) {
       toast.error(
         err instanceof Error ? err.message : "Unable to sign in. Please try again.",
@@ -49,7 +58,7 @@ export function AuthCard({ mode }: Props) {
   const google = async () => {
     setBusy(true);
     const result = await lovable.auth.signInWithOAuth("google", {
-      redirect_uri: window.location.origin,
+      redirect_uri: `${window.location.origin}${returnTo ?? ""}`,
     });
     if (result.error) {
       setBusy(false);
@@ -57,7 +66,8 @@ export function AuthCard({ mode }: Props) {
       return;
     }
     if (result.redirected) return;
-    void navigate({ to: "/developer/dashboard" });
+    if (returnTo) window.location.href = returnTo;
+    else void navigate({ to: "/developer/dashboard" });
   };
 
   const resetPassword = async () => {
