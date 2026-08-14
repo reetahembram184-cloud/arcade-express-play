@@ -6,14 +6,29 @@
 // You can pass additional config via defineConfig({ vite: { ... }, etc... }) if needed.
 import { defineConfig } from "@lovable.dev/vite-tanstack-config";
 
+// GitHub Pages: static SPA build (no server runtime).
+// Enabled by setting GITHUB_PAGES=true in the deploy workflow so the normal
+// Lovable/server build stays exactly as it was.
+const isGithubPages = process.env["GITHUB_PAGES"] === "true";
+
 export default defineConfig({
   vite: {
     base: "/arcade-express-play/",
   },
 
+  // Nitro (server bundle) is not used for GitHub Pages — output is pure static.
+  ...(isGithubPages ? { nitro: false as const } : {}),
+
   tanstackStart: {
     // Redirect TanStack Start's bundled server entry to src/server.ts (our SSR error wrapper).
     // nitro/vite builds from this
     server: { entry: "server" },
+    ...(isGithubPages
+      ? {
+          // Render a single static shell that boots the client router for every route.
+          spa: { enabled: true },
+          prerender: { enabled: true, crawlLinks: false },
+        }
+      : {}),
   },
 });
