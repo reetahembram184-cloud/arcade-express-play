@@ -33,7 +33,7 @@ export function AuthCard({ mode, next }: Props) {
           email,
           password,
           options: {
-            emailRedirectTo: `${window.location.origin}/developer/dashboard`,
+            emailRedirectTo: `${window.location.origin}${returnTo ?? "/developer/dashboard"}`,
             data: { display_name: name || email.split("@")[0] },
           },
         });
@@ -44,7 +44,8 @@ export function AuthCard({ mode, next }: Props) {
         if (error) throw error;
         toast.success("Login successful");
       }
-      void navigate({ to: "/developer/dashboard" });
+      if (returnTo) window.location.href = returnTo;
+      else void navigate({ to: "/developer/dashboard" });
     } catch (err) {
       toast.error(
         err instanceof Error ? err.message : "Unable to sign in. Please try again.",
@@ -57,7 +58,7 @@ export function AuthCard({ mode, next }: Props) {
   const google = async () => {
     setBusy(true);
     const result = await lovable.auth.signInWithOAuth("google", {
-      redirect_uri: window.location.origin,
+      redirect_uri: `${window.location.origin}${returnTo ?? ""}`,
     });
     if (result.error) {
       setBusy(false);
@@ -65,7 +66,8 @@ export function AuthCard({ mode, next }: Props) {
       return;
     }
     if (result.redirected) return;
-    void navigate({ to: "/developer/dashboard" });
+    if (returnTo) window.location.href = returnTo;
+    else void navigate({ to: "/developer/dashboard" });
   };
 
   const resetPassword = async () => {
