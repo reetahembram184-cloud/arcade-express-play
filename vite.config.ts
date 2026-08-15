@@ -15,9 +15,13 @@ const isGithubPages = process.env["GITHUB_PAGES"] === "true";
 export default defineConfig({
   plugins: [mcpPlugin()],
 
-  vite: {
-    base: "/arcade-express-play/",
-  },
+  ...(isGithubPages
+    ? {
+        vite: {
+          base: "/arcade-express-play/",
+        },
+      }
+    : {}),
 
   // Nitro (server bundle) is not used for GitHub Pages — output is pure static.
   ...(isGithubPages ? { nitro: false as const } : {}),
